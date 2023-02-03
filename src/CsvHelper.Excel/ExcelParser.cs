@@ -83,8 +83,10 @@ namespace CsvHelper.Excel
         /// <param name="culture">The culture.</param>
         /// <param name="leaveOpen"><c>true</c> to leave the <see cref="TextWriter"/> open after the <see cref="ExcelParser"/> object is disposed, otherwise <c>false</c>.</param>
         public ExcelParser(Stream stream, string sheetName, CultureInfo culture, bool leaveOpen = false) : this(stream,
-            sheetName, new CsvConfiguration(culture), leaveOpen)
-            {}
+            sheetName, new CsvConfiguration(culture))
+        {
+            _leaveOpen = leaveOpen;
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ExcelParser"/> class.
@@ -103,10 +105,9 @@ namespace CsvHelper.Excel
         /// <param name="stream">The stream.</param>
         /// <param name="sheetName">The sheet name</param>
         /// <param name="configuration">The configuration.</param>
-        /// <param name="leaveOpen"><c>true</c> to leave the <see cref="TextWriter"/> open after the <see cref="ExcelParser"/> object is disposed, otherwise <c>false</c>.</param>
-        public ExcelParser(Stream stream, string sheetName, CsvConfiguration configuration, bool leaveOpen = false)
+        public ExcelParser(Stream stream, string sheetName, CsvConfiguration configuration)
         {
-            var workbook = new XLWorkbook(stream, XLEventTracking.Disabled);
+            var workbook = new XLWorkbook(stream);
 
             _worksheet = string.IsNullOrEmpty(sheetName) ? workbook.Worksheet(1) : workbook.Worksheet(sheetName);
 
@@ -123,7 +124,6 @@ namespace CsvHelper.Excel
             }
 
             Context = new CsvContext(this);
-            _leaveOpen = leaveOpen;
         }
 
 
